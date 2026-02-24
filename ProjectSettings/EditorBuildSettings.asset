@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/_Scenes/Main menu.unity
+    guid: 756e2042def8b8f4588afc1a44e4c4da
+  - enabled: 1
+    path: Assets/_Scenes/Coin and Skin Shop.unity
+    guid: 5c5e153f9131b0c4fa8ec52a48a55f52
+  - enabled: 1
+    path: Assets/_Scenes/Fusion Multiplayer scene.unity
+    guid: dbee2e4c5e9a245fe9d747e84d67a0a9
+  - enabled: 1
+    path: Assets/_Scenes/Guns Shop.unity
+    guid: 85bc066fbade8e849bd1568c24358c65
+  - enabled: 1
+    path: Assets/_Scenes/Joystick Settings Scene.unity
+    guid: d22076960af77ea449450de7bf71d213
+  - enabled: 1
+    path: Assets/_Scenes/Map  test 2.unity
+    guid: 81c8c58ec55ab2d48a29f200ca65d61d
+  - enabled: 1
+    path: Assets/_Scenes/Map 1.unity
+    guid: 4c08af5830609b241ae65cebe4bded7b
+  - enabled: 1
+    path: Assets/_Scenes/Map 2.unity
+    guid: 6f74b3c333dc5b644b7b85c49a2844ff
+  - enabled: 1
+    path: Assets/_Scenes/Map 3.unity
+    guid: 462b3785270684c41a1f93bbbcaed9ac
+  - enabled: 1
+    path: Assets/_Scenes/Map 4.unity
+    guid: 33ab789529899434395ba019546c174b
+  - enabled: 1
+    path: Assets/_Scenes/Map 5.unity
+    guid: e84ffb1a227b0df4196ed48783c3debd
+  - enabled: 1
+    path: Assets/_Scenes/Map 6.unity
+    guid: f898a5cf40d77264686802a84b186e47
+  - enabled: 1
+    path: Assets/_Scenes/Map 7.unity
+    guid: 127e04e8c78ad4349a9eb9b296640aee
+  - enabled: 1
+    path: Assets/_Scenes/Map Menu.unity
+    guid: fae9077c4b086304397ed38217622606
+  - enabled: 1
+    path: Assets/_Scenes/Old Combat test.unity
+    guid: 246f5719aa9bbc5418f1eddd43fd79a7
+  - enabled: 1
+    path: Assets/_Scenes/Old Pun connecting scene.unity
+    guid: ec6825fb352ed1945b7fd4bd06abf510
+  - enabled: 1
+    path: Assets/_Scenes/Old Pun Lobby.unity
+    guid: f3a9ea9712c9b0542a1fedbb918bcbb8
+  - enabled: 1
+    path: Assets/_Scenes/Opening Or Splash Screen.unity
+    guid: 226703824b919488d98f4c1de075f05d
+  - enabled: 1
+    path: Assets/_Scenes/Skins.unity
+    guid: 321bf1b4cd95617448f3a6f9dfd74fef
+  - enabled: 1
+    path: Assets/_Scenes/Transactions.unity
+    guid: 63b9e4f94065f254b8731cf8321dfcc0
+  - enabled: 1
+    path: Assets/_Scenes/Turret test scene.unity
+    guid: 5a0b73b0503a0964bb0776dee4c8857b
+  - enabled: 1
+    path: Assets/_Scenes/Tutorial.unity
+    guid: b5d1f393f8848a1469d08952bc71a876
+  m_configObjects: {}
