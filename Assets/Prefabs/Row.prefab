@@ -28,9 +28,9 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.059139285, y: 0.09092665, z: 0.09092665}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4764916803309339390}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -60,12 +60,13 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 54584d22f6b13364bbd9bdaaf3977f02, type: 3}
+    m_Font: {fileID: 12800000, guid: d9c0344e6ff05904c9502186c12ab3ce, type: 3}
     m_FontSize: 83
     m_FontStyle: 0
     m_BestFit: 0
@@ -106,9 +107,9 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.059139285, y: 0.09092665, z: 0.09092665}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4764916803309339390}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -138,12 +139,13 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 54584d22f6b13364bbd9bdaaf3977f02, type: 3}
+    m_Font: {fileID: 12800000, guid: d9c0344e6ff05904c9502186c12ab3ce, type: 3}
     m_FontSize: 83
     m_FontStyle: 0
     m_BestFit: 0
@@ -182,12 +184,12 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4764916803403814250}
   - {fileID: 4764916802619443360}
   - {fileID: 4764916802837633625}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -222,9 +224,9 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.059139285, y: 0.09092665, z: 0.09092665}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4764916803309339390}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -254,12 +256,13 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 54584d22f6b13364bbd9bdaaf3977f02, type: 3}
+    m_Font: {fileID: 12800000, guid: d9c0344e6ff05904c9502186c12ab3ce, type: 3}
     m_FontSize: 83
     m_FontStyle: 0
     m_BestFit: 0

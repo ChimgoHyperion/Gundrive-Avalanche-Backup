@@ -21,7 +21,7 @@ EditorBuildSettings:
     path: Assets/_Scenes/Joystick Settings Scene.unity
     guid: d22076960af77ea449450de7bf71d213
   - enabled: 1
-    path: Assets/_Scenes/Map  test 2.unity
+    path: Assets/_Scenes/Prototyping room.unity
     guid: 81c8c58ec55ab2d48a29f200ca65d61d
   - enabled: 1
     path: Assets/_Scenes/Map 1.unity

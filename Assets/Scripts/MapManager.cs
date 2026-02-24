@@ -1,134 +1,115 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using System.IO;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MapManager : MonoBehaviour
 {
-    public MapStates mapstates;
-    public Button map2, map3, map4,map5;
-    public int TotalCoins;
-    public Button buy2, buy3, buy4,buy5;
-    private string mapStatesPath;
+    // used from mapselection
 
+    [SerializeField] int SelectedMapNumber;
+    public Sprite[] SelectedMapDisplaySprites;
+    [SerializeField] Image CurrentSelectedMapDisplay;
 
-    // Start is called before the first frame update
-    void Start()
+   public GameObject LoadingObj;
+
+    public const string SelectedMap = "SelectedMap";
+
+    public TextMeshProUGUI MapNameText,MapDescriptionText;
+
+  [SerializeField]  public Color[] textcolors;
+
+    public void ChooseMap(int MapNumber)
     {
-      //  mapstates.map4Unlocked = false;
-        //mapStatesPath = $"{Application.persistentDataPath}/MapStates.json";
-        //if (File.Exists(mapStatesPath))
-        //{
-        //    string json = File.ReadAllText(mapStatesPath);
-        //    mapstates = JsonUtility.FromJson<MapStates>(json);
-        //}
-        //TotalCoins = coinsStoring.instance.CoinsStored;
-        RerenderMaps();
+        SelectedMapNumber = MapNumber;
+        PlayerPrefs.SetInt(SelectedMap, SelectedMapNumber);
+        CurrentSelectedMapDisplay.sprite = SelectedMapDisplaySprites[SelectedMapNumber];
+
+        switch (SelectedMapNumber)
+        {
+            case 0:
+                
+                MapNameText.text = "Greenville";
+                MapNameText.color = textcolors[0];
+                MapDescriptionText.text = "Droid first contact";
+                break;
+            case 1:
+                MapNameText.text = "Rockies";
+                MapNameText.color = textcolors[1];
+                MapDescriptionText.text = "Rocky hills and mountains";
+                break;
+            case 2:
+                MapNameText.text = "Zero Horizon";
+                MapNameText.color = textcolors[2];
+                MapDescriptionText.text = "Violet side of the Moon ";
+                break;
+            case 3:
+                MapNameText.text = "DeepFrost";
+                MapNameText.color = textcolors[3];
+                MapDescriptionText.text = "Absolute Zero!";
+                break;
+            case 4:
+                MapNameText.text = "Smoke Box";
+                MapNameText.color = textcolors[4];
+                MapDescriptionText.text = "Heavy Industry";
+                break;
+            case 5:
+                MapNameText.text = "Igbo Ukwu";
+                MapNameText.color = textcolors[5];
+                MapDescriptionText.text = "Back to Ancient Africa";
+                break;
+            case 6:
+                MapNameText.text = "Ancient Egypt";
+                MapNameText.color = textcolors[6];
+                MapDescriptionText.text = "Deep inside King Tut's tomb";
+                break;
+
+        }
     }
 
-   
-    // Update is called once per frame
-    void Update()
+    public void ApproveMapSelection()
     {
-        //TotalCoins = PlayerPrefs.GetInt("Coins");
-    }
-    public void Reset()
-    {
-        File.Delete(mapStatesPath);
-
-        
+        //  VersusScreen.SetActive(true);
+      //  MapUIScreen.SetActive(false);
+        StartCoroutine(Delay());
     }
 
-    public void BuyMap2(int price)
+    IEnumerator Delay()
     {
-        if (TotalCoins >= price)
-        {
-            PlayerPrefs.SetInt("Coins", TotalCoins - price);
-            mapstates.map2Unlocked = true;
-         //   RerenderMaps();
-            SaveJson();
-        }
-    }
-    public void BuyMap3(int price)
-    {
-        if (TotalCoins >= price)
-        {
-            PlayerPrefs.SetInt("Coins", TotalCoins - price);
-            mapstates.map3Unlocked = true;
-          //  RerenderMaps();
-            SaveJson();
-        }
-    }
-    public void BuyMap4(int price)
-    {
+        yield return new WaitForSeconds(0f); // previously 2f. till versus screen is fixed
+        LoadingObj.SetActive(true);
+        yield return new WaitForSeconds(4f); // short delay introduced regardless of AsyncOperation
+                                             //  SceneManager.LoadScene("Offline Scene Final",LoadSceneMode.Single);
 
-        /*if (coinsStoring.instance.HighScore>= 4000)
+        switch (SelectedMapNumber)
         {
-            mapstates.map4Unlocked = true;
-            RerenderMaps();
-            SaveJson();
-        }*/
-        if (TotalCoins >= price)
-        {
-            PlayerPrefs.SetInt("Coins", TotalCoins - price);
-            mapstates.map4Unlocked = true;
-          //  RerenderMaps();
-            SaveJson();
-        }
-    }
-    public void BuyMap5(int price)
-    {
+            case 0:
+                SceneManager.LoadScene("Map 1", LoadSceneMode.Single);
+                
+                break;
+             case 1:
+                SceneManager.LoadScene("Map 2", LoadSceneMode.Single);
+                break;
+            case 2:
+                SceneManager.LoadScene("Map 3", LoadSceneMode.Single);
+                break;
+            case 3:
+                SceneManager.LoadScene("Map 4", LoadSceneMode.Single);
+                break;
+            case 4:
+                SceneManager.LoadScene("Map 5", LoadSceneMode.Single);
+                break;
+            case 5:
+                SceneManager.LoadScene("Map 6", LoadSceneMode.Single);
+                break;
+            case 6:
+                SceneManager.LoadScene("Map 7", LoadSceneMode.Single);
+                break;
 
-        /*if (coinsStoring.instance.HighScore>= 4000)
-        {
-            mapstates.map4Unlocked = true;
-            RerenderMaps();
-            SaveJson();
-        }*/
-        if (TotalCoins >= price)
-        {
-            PlayerPrefs.SetInt("Coins", TotalCoins - price);
-            mapstates.map5Unlocked = true;
-           // RerenderMaps();
-            SaveJson();
         }
-    }
-    private void RerenderMaps()
-    {
-        if (mapstates.map2Unlocked)
-        {
-            map2.interactable = true;
-            buy2.gameObject.SetActive(false);
-        }
-        if (mapstates.map3Unlocked)
-        {
-            map3.interactable = true;
-            buy3.gameObject.SetActive(false);
-        }
-        if (mapstates.map4Unlocked)
-        {
-            map4.interactable = true;
-            buy4.gameObject.SetActive(false);
-        }
-        if (mapstates.map5Unlocked)
-        {
-            map5.interactable = true;
-            buy5.gameObject.SetActive(false);
-        }
-    }
-    private void SaveJson()
-    {
-        string json = JsonUtility.ToJson(mapstates);
-        File.WriteAllText(mapStatesPath, json);
-    }
-    public void UnlockAll()
-    {
-        mapstates.map2Unlocked = true;
-        mapstates.map3Unlocked = true;
-        mapstates.map4Unlocked = true;
-        mapstates.map5Unlocked = true;
-        RerenderMaps();
-        SaveJson();
+       
     }
 }
