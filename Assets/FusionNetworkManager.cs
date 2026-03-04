@@ -253,7 +253,51 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    // handling staking
+    [Header("Staking and Web3")]
+    public InputField amountToStakeInputField;
+    
+    public void OnStakingCreateButtonClicked()
+    {
+        // check if the input field for staking amount has any value , then if true initialise signing the transaction
+
+    }
    
+    public void OnStakingJoinButtonClicked()
+    {
+        // start the signing of transaction, pass in the room code/ match id and other data which triggers the contract to know the amount we have to stake
+
+
+    }
+
+    void OnStakingConfirmedbyCreator()
+    {
+        // can now create the room normally with photon. 
+        // store the amount staked 
+    }
+    void OnStakingConfirmedbyJoiner()
+    {
+        // can now join the room 
+    }
+
+    // game session manager variables to store, the addresses of the players involved, so that the contract perform the awarding as is needed when the match ends
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // also make sure that match cant be canceled when room members are complete
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {
        
