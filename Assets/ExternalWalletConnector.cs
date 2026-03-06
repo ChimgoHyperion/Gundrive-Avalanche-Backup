@@ -3,7 +3,9 @@
 // Requires: ThirdwebManager prefab in scene with your Client ID set.
 
 using System;
+using System.Numerics;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using Thirdweb;
 using Thirdweb.Unity;
 using TMPro;
@@ -140,15 +142,18 @@ public class ExternalWalletConnector : MonoBehaviour
     private void ShowConnectedState(string address)
     {
         // Shorten address:  0x1234...abcd
-        string shortAddress = $"{address[..6]}...{address[^4..]}";
-        SetStatus($"Connected:\n{shortAddress}");
+        //string shortAddress = $"{address[..6]}...{address[^4..]}";
+        //SetStatus($"Connected:\n{shortAddress}");
 
+        SetStatus($"{address}");
         ConnectedPanel?.SetActive(true);
         DisconnectedPanel?.SetActive(false);
 
         ConnectWalletbtnObj.SetActive(false);
         DisconnectWalletbtnObj.SetActive(true);
 
+
+        FindObjectOfType<TokenBalanceDisplay>().ButtonViewBalance();
     }
 
     private void ShowDisconnectedState()
@@ -168,4 +173,7 @@ public class ExternalWalletConnector : MonoBehaviour
 
         Debug.Log($"[WalletConnector] {message}");
     }
+
+
+   
 }

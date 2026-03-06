@@ -1,8 +1,11 @@
+using Fusion;
+using Fusion.Sockets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Fusion;
-using Fusion.Sockets;
+using System.Numerics;
+using Thirdweb;
+using Thirdweb.Unity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,6 +23,9 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public GameObject playerPrefab;
     public TextMeshProUGUI RoomID,connectionStateText, WaitingRoomCountDownText,WinnerText;
     public Button CreateRoomBtn, JoinRoomBtn;
+
+    public bool intentionalDisconnect = false;
+    public GameObject CantConnectToServerErrorUI;
     // Start is called before the first frame update
     void Start()
     {
@@ -166,7 +172,7 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         yield return new WaitForSeconds(1f);
         
-        runnerInstance.Spawn(GameSessionManagement, Vector2.zero);
+        runnerInstance.Spawn(GameSessionManagement, UnityEngine.Vector2.zero);
         yield return new WaitForSeconds(2f);
        // runnerInstance.Spawn(WeaponSpawner, Vector2.zero);
     }
@@ -183,7 +189,7 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
             waitingRoomUI.SetActive(true);
            
-            NetworkObject playernetworkobject = runnerInstance.Spawn(playerPrefab, new Vector2(0,0), Quaternion.identity);
+            NetworkObject playernetworkobject = runnerInstance.Spawn(playerPrefab, new UnityEngine.Vector2(0,0), UnityEngine.Quaternion.identity);
             runnerInstance.SetPlayerObject(player, playernetworkobject);
 
           
@@ -202,6 +208,7 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         // rejoin lobby( either through reloading the scene or restarting the network runner)
 
+        intentionalDisconnect = true;// player wanted to leave room
     }
 
     public void LeaveAndEnterMainMenu()
@@ -224,10 +231,21 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);// reload scene
+
+        if (intentionalDisconnect == true)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);// reloading the scene.
+        }
+        else if (intentionalDisconnect == false)
+        {
+            // display shutdown reason
+            CantConnectToServerErrorUI.SetActive(true);
+            FindObjectOfType<StakeManager>().CancelMatch(); // give everyone back their money for staking matches
+        }
     }
 
-
    
+
     public int PlayerCount = 2;    // Tracks the current playerCount 
     public TextMeshProUGUI PlayerCountText;
    
@@ -253,48 +271,40 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // handling staking
-    [Header("Staking and Web3")]
-    public InputField amountToStakeInputField;
-    
-    public void OnStakingCreateButtonClicked()
+
+
+  //  web 3 part    
+    public void CreateStakingRoom(int matchID)
     {
-        // check if the input field for staking amount has any value , then if true initialise signing the transaction
+        int MatchName = matchID;
+        string randomSessionName = "Rm-" + MatchName.ToString();
+
+        // customizing the Room/Session's properties
+        var customProperties = new Dictionary<string, SessionProperty>();
+        // a way of assigning or pairing the 
+        // key of the customproperties dictionary to the value of 'gameType' , which also a string representing the selected gametype
+        customProperties["PlayersInRoom"] = PlayerCount;
+
+        runnerInstance.StartGame(new StartGameArgs()
+        {
+            PlayerCount = PlayerCount,// set by the function argument
+            SessionName = randomSessionName,
+            GameMode = GameMode.Shared,
+            SessionProperties = customProperties
+        });
+    }
+    public async void ConnecToSpecificStakingSession(int matchID)
+    {
+
+        await runnerInstance.StartGame(new StartGameArgs()
+        {
+            GameMode = GameMode.Shared,
+            SessionName = "Rm-" + matchID,
+
+
+        });
 
     }
-   
-    public void OnStakingJoinButtonClicked()
-    {
-        // start the signing of transaction, pass in the room code/ match id and other data which triggers the contract to know the amount we have to stake
-
-
-    }
-
-    void OnStakingConfirmedbyCreator()
-    {
-        // can now create the room normally with photon. 
-        // store the amount staked 
-    }
-    void OnStakingConfirmedbyJoiner()
-    {
-        // can now join the room 
-    }
-
-    // game session manager variables to store, the addresses of the players involved, so that the contract perform the awarding as is needed when the match ends
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // also make sure that match cant be canceled when room members are complete

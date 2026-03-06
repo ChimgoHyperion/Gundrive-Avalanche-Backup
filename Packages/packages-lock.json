@@ -22,7 +22,7 @@
     },
     "com.reown.core": {
       "version": "1.5.2",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.reown.core.common": "1.5.2",
@@ -35,7 +35,7 @@
     },
     "com.reown.core.common": {
       "version": "1.5.2",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.2.1"
@@ -44,7 +44,7 @@
     },
     "com.reown.core.crypto": {
       "version": "1.5.2",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.reown.core.common": "1.5.2",
@@ -56,7 +56,7 @@
     },
     "com.reown.core.network": {
       "version": "1.5.2",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.reown.core.common": "1.5.2"
@@ -65,7 +65,7 @@
     },
     "com.reown.core.storage": {
       "version": "1.5.2",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.reown.core.common": "1.5.2"
@@ -74,7 +74,7 @@
     },
     "com.reown.sign": {
       "version": "1.5.2",
-      "depth": 2,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.reown.core": "1.5.2"
@@ -83,7 +83,7 @@
     },
     "com.reown.sign.nethereum": {
       "version": "1.5.2",
-      "depth": 2,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.reown.sign": "1.5.2",
@@ -93,7 +93,7 @@
     },
     "com.reown.sign.nethereum.unity": {
       "version": "1.5.2",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.reown.sign.nethereum": "1.5.2",
@@ -103,7 +103,7 @@
     },
     "com.reown.sign.unity": {
       "version": "1.5.2",
-      "depth": 1,
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.modules.androidjni": "1.0.0",
@@ -238,8 +238,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.nuget.newtonsoft-json": {
-      "version": "3.2.1",
-      "depth": 1,
+      "version": "3.2.2",
+      "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"

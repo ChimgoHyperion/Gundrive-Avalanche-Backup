@@ -97,10 +97,10 @@ public class SkinShopManager : MonoBehaviour
         // another function will exist which. a, checks the wallet for existence of skin id. if 
         // the id exists, make an api call to save the skin on the player's playfab account (saveskinasowned). 
 
-        if (Web3Manager.Instance.IsWalletConnected())
-        {
-           StartCoroutine(delayBeforeWalletCheck());
-        }
+        //if (Web3Manager.Instance.IsWalletConnected())
+        //{
+        //   StartCoroutine(delayBeforeWalletCheck());
+        //}
     }
     // Update is called once per frame
     void Update()
@@ -117,18 +117,18 @@ public class SkinShopManager : MonoBehaviour
     }
     void GetOwnedSkinsFromWallet()
     {
-       var userNFTs = Web3Manager.Instance.getUserNftSkins();
-        foreach (SimpleNftData NFTData in userNFTs)
-        {
-            Debug.Log(NFTData.name +"is owned");
+       //var userNFTs = Web3Manager.Instance.getUserNftSkins();
+       // foreach (SimpleNftData NFTData in userNFTs)
+       // {
+       //     Debug.Log(NFTData.name +"is owned");
 
-            ownedSkins[NFTData.name] = "owned";
+       //     ownedSkins[NFTData.name] = "owned";
 
-            cachedOwnedSkins.Add(NFTData.name); // cache skins
-          //   hasFetchedSkins = true; // Set flag to prevent future API calls
-             ApplyOwnedSkins();
-            SaveSkinAsOwned(NFTData.name);
-        }
+       //     cachedOwnedSkins.Add(NFTData.name); // cache skins
+       //   //   hasFetchedSkins = true; // Set flag to prevent future API calls
+       //      ApplyOwnedSkins();
+       //     SaveSkinAsOwned(NFTData.name);
+       // }
         //if (skin id exists in wallet)
         //{
         //    Debug.Log(Skin_ID + " is owned; // debug 
@@ -222,7 +222,7 @@ public class SkinShopManager : MonoBehaviour
         {
             Debug.Log("Saved " + Skin_ID + " as owned.");
             ownedSkins[Skin_ID] = "owned"; // Update local cache too
-            await Web3Manager.Instance.MintNftAsync(Skin_ID, "made_in_aba");
+           // await Web3Manager.Instance.MintNftAsync(Skin_ID, "made_in_aba");
             SkinBuyButtons[Skin_ID].SetActive(false);// deactivate buy button
             SkinSelectionButtons[Skin_ID].interactable = true;
             ProccessingUI.SetActive(false);

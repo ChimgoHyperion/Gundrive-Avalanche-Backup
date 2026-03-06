@@ -56,17 +56,19 @@ public class EndGameManager : MonoBehaviour
         // activate spin panel
        
         yield return new WaitForSeconds(0.4f);
-        if (LoggedInManager.Instance.isLoggedIn)
-        {
-            SpinWheelPanel.GetComponent<CanvasGroup>().alpha = 1;
-            SpinWheelPanel.GetComponent<CanvasGroup>().interactable = true;
-            SpinWheelPanel.GetComponent<CanvasGroup>().blocksRaycasts = true;
-        }
-        else
-        {
-            Deathpanel.SetActive(true);
-        }
-       
+        //if (LoggedInManager.Instance.isLoggedIn)
+        //{
+        //    SpinWheelPanel.GetComponent<CanvasGroup>().alpha = 1;
+        //    SpinWheelPanel.GetComponent<CanvasGroup>().interactable = true;
+        //    SpinWheelPanel.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        //}
+        //else
+        //{
+        //    Deathpanel.SetActive(true);
+        //}
+        SpinWheelPanel.GetComponent<CanvasGroup>().alpha = 1;// without loggin in for now
+        SpinWheelPanel.GetComponent<CanvasGroup>().interactable = true;
+        SpinWheelPanel.GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
     public void CompletedSpin()
     {
@@ -111,7 +113,7 @@ public class EndGameManager : MonoBehaviour
                 XPRewardsPanel.GetComponent<CanvasGroup>().alpha = 1;
                 XPRewardsPanel.GetComponent<CanvasGroup>().interactable = true;
                 XPRewardsPanel.GetComponent<CanvasGroup>().blocksRaycasts = true;
-                XPRewardsPanel.GetComponent<XPandRewardsManager>().OnGameEnd();
+              //  XPRewardsPanel.GetComponent<XPandRewardsManager>().OnGameEnd(); // disabled for now till solidified
               
                 break;
             case EndGameStep.FinalDeathPanel:
@@ -119,7 +121,7 @@ public class EndGameManager : MonoBehaviour
                 XPRewardsPanel.GetComponent<CanvasGroup>().alpha = 0;
                 XPRewardsPanel.GetComponent<CanvasGroup>().interactable = false;
                 XPRewardsPanel.GetComponent<CanvasGroup>().blocksRaycasts = false;
-                XPRewardsPanel.GetComponent<XPandRewardsManager>().OnGameEnd();
+              //  XPRewardsPanel.GetComponent<XPandRewardsManager>().OnGameEnd();
 
                 // temporary
                 SpinWheelPanel.GetComponent<CanvasGroup>().alpha = 0;

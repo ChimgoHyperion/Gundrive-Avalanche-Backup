@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/_Scenes/Fusion Multiplayer scene.unity
     guid: dbee2e4c5e9a245fe9d747e84d67a0a9
   - enabled: 1
+    path: Assets/_Scenes/Fusion Multiplayer staking scene.unity
+    guid: 842ab9c1fade59e4eb53188faff38cf7
+  - enabled: 1
     path: Assets/_Scenes/Guns Shop.unity
     guid: 85bc066fbade8e849bd1568c24358c65
   - enabled: 1

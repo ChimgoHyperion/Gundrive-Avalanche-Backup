@@ -168,6 +168,10 @@ public class GameMaster : MonoBehaviour
     {
         SceneManager.LoadScene("Fusion Multiplayer scene");
     }
+    public void GoToStakeToPlayMultiplayer()
+    {
+        SceneManager.LoadScene("Fusion Multiplayer staking scene");
+    }
     public void ActivatePlayPanel()
     {
         playPanel.SetActive(true);

@@ -1,9 +1,15 @@
+using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
+using Thirdweb;
+using Thirdweb.Unity;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-
+using Random = UnityEngine.Random;
+using Vector3 = UnityEngine.Vector3;
 
 public class WheelManager : MonoBehaviour
 {
@@ -20,9 +26,17 @@ public class WheelManager : MonoBehaviour
 
     public GameObject EarnedRewardUI;
     public TextMeshProUGUI earnedStatementText;
-    void Start()
+   
+    async void Start()
     {
         spinButton.onClick.AddListener(SpinWheel);
+
+
+        // v5 way to get a contract
+        shooterCoin = await ThirdwebManager.Instance.GetContract(
+            address: shooterCoinAddress,
+            chainId: 43113  // Avalanche Fuji
+        );
     }
 
     public void SpinWheel()
@@ -112,7 +126,9 @@ public class WheelManager : MonoBehaviour
 
                 break;
             case "5 Coins":
-                CoinBalanceHolder.Instance.AddVirtualCurrency(5);
+                // CoinBalanceHolder.Instance.AddVirtualCurrency(5);
+                OnPlayerWin(5);
+
 
                 EarnedRewardUI.SetActive(true);
                 earnedStatementText.text = "5 Coins(0.0033$GUND)";
@@ -126,7 +142,9 @@ public class WheelManager : MonoBehaviour
 
                 break;
             case "10 Coins":
-                CoinBalanceHolder.Instance.AddVirtualCurrency(10);
+                //  CoinBalanceHolder.Instance.AddVirtualCurrency(10);
+
+                OnPlayerWin(10);
 
                 EarnedRewardUI.SetActive(true);
                 earnedStatementText.text = "10 Coins(0.0066$GUND)";
@@ -142,4 +160,29 @@ public class WheelManager : MonoBehaviour
         }
     }
 
+    // Your contract addresses
+    private string shooterCoinAddress =
+        "0xA2214B51Bc444f4A1065f629F3Aac1C4720f040c";
+
+    private ThirdwebContract shooterCoin;
+
+  
+
+   
+
+
+    public async void OnPlayerWin(int rewardAmount)
+    {
+        var receipt = await ThirdwebContract.Write(
+            wallet: ThirdwebManager.Instance.ActiveWallet,
+            contract: shooterCoin,
+            method: "rewardPlayer",
+            weiValue: 0,
+            parameters: new object[] { rewardAmount } // 10 SHC reward
+        );
+
+        Debug.Log("Player earned 10 SHC!");
+    }
 }
+
+
