@@ -21,17 +21,14 @@ public class ShopSelectionManager : MonoBehaviour
         
     }
 
-    public void SelectCoinShop()
-    {
-        selectedShopName = "CoinShop";
-    }
+   
     public void SelectSkins()
     {
         selectedShopName = "SkinShop";
     }
 
-    public void SelectWithdrawal()
+    public void SelectNFTClaim()
     {
-        selectedShopName = "WithdrawSection";
+        selectedShopName = "NFTClaimSection";
     }
 }

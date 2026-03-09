@@ -432,6 +432,8 @@ public class MultiplayerMoveAndShoot : NetworkBehaviour
         {
             
             lastAttacker.GetComponent<MultiplayerMoveAndShoot>().NetworkedScore += 1;
+            int newScore = lastAttacker.GetComponent<MultiplayerMoveAndShoot>().NetworkedScore;
+            lastAttacker.GetComponent<MultiplayerMoveAndShoot>().SubmitScore(lastAttacker.GetComponent<NetworkObject>(), newScore);
         }
        
         StartCoroutine(waitBeforeRespawn());
@@ -478,7 +480,7 @@ public class MultiplayerMoveAndShoot : NetworkBehaviour
         lastAttacker = null;// to avoid the player coming back and rewarding the last attacker again
 
     }
-
+    
     [Rpc]
     public void RPC_Activations(bool ActiveState,int alphaState)
     {
@@ -522,6 +524,12 @@ public class MultiplayerMoveAndShoot : NetworkBehaviour
         joyStickGroup.blocksRaycasts = false;
         joyStickGroup.alpha = 0;
         UIControls.SetActive(false);
+    }
+
+    public void SubmitScore(NetworkObject player, int newscore)
+    {
+        GameManagerMulti.Instance.OnPlayerScoreUpdate(player.StateAuthority, newscore);
+      
     }
 }
 

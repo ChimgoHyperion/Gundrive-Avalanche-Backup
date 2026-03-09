@@ -91,6 +91,8 @@ public class GameManagerMulti : NetworkBehaviour
 
         }
         CountDownTimer();
+
+        submitScoresManager = FindObjectOfType<SubmitScoresManager>();
     }
 
     [Rpc]
@@ -214,6 +216,8 @@ public class GameManagerMulti : NetworkBehaviour
         //  winnerTextUI.text = $"Winner: {winnerName} ({highestScore} points)";
 
         FusionNetworkManager.networkManagerInstance.WinnerText.text = "Winner: " + winnerName;
+
+        OnMatchEnd();
     }
 
     void multiplayerSpawn()
@@ -239,5 +243,29 @@ public class GameManagerMulti : NetworkBehaviour
         }
         else
             Debug.LogWarning("Invalid spawn index");
+    }
+
+
+
+    // submiting scores
+    public SubmitScoresManager submitScoresManager;
+
+    // This already fires in your Photon Fusion game
+    void OnMatchEnd()
+    {
+        Debug.Log("match ended");
+        int matchId = PlayerPrefs.GetInt("currentMatchId");
+
+        int.TryParse(FusionNetworkManager.runnerInstance.SessionInfo.Name, out int value);
+
+
+      //  string roomID = FusionNetworkManager.runnerInstance.SessionInfo.Name;
+        submitScoresManager.OnMatchEnd(matchId);// instead of using matchid. 
+    }
+
+    // Call this when player shoots/kills someone
+    public void OnPlayerScoreUpdate(PlayerRef player, int newScore)
+    {
+        submitScoresManager.UpdatePlayerScore(player, newScore);
     }
 }

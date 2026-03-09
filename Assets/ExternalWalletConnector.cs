@@ -89,6 +89,8 @@ public class ExternalWalletConnector : MonoBehaviour
             var wallet = await ThirdwebManager.Instance.ConnectWallet(options);
 
             string address = await wallet.GetAddress();
+
+            PlayerPrefs.SetString("ConnectedWalletAddress", address);
             ShowConnectedState(address);
         }
         catch (Exception e)

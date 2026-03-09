@@ -323,4 +323,9 @@ public class GameMaster : MonoBehaviour
     {
         infoPanel.SetActive(false);
     }
+
+    public void OpenURL(string url)
+    {
+        Application.OpenURL(url);
+    }
 }

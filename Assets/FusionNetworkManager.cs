@@ -1,5 +1,6 @@
 using Fusion;
 using Fusion.Sockets;
+using NanoSockets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,13 +20,19 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     [Header("To collect player data")]
    // [SerializeField] TMP_InputField EnterRoomIDInputField;
     public InputField EnterRoomIDInputField; // tmpro doesnt work on web for some reason
-    public GameObject GameSessionManagement, lobbyPanel,waitingRoomUI, LobbyCamera, TimerObj;
+    public GameObject GameSessionManagement,submitScoresmanagement, lobbyPanel,waitingRoomUI, LobbyCamera, TimerObj;
     public GameObject playerPrefab;
     public TextMeshProUGUI RoomID,connectionStateText, WaitingRoomCountDownText,WinnerText;
     public Button CreateRoomBtn, JoinRoomBtn;
 
     public bool intentionalDisconnect = false;
     public GameObject CantConnectToServerErrorUI;
+
+    public bool lobbyJoined;
+    public GameObject RetryconnectionUI;
+
+    // may have to  be instantiated though
+    public SubmitScoresManager submitScoresManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +60,33 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         runnerInstance.JoinSessionLobby(SessionLobby.Shared, LobbyName);
 
+
+
+
+
+        float t = 0f;
+        while (!lobbyJoined && t < 5f)
+        {
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!lobbyJoined)
+            OnLobbyJoinFailed();
+
+    }
+
+    void OnLobbyJoinFailed()
+    {
+        connectionStateText.text = "Connection failed. Tap to retry.";
+        RetryconnectionUI.SetActive(true);
+
+    }
+
+    public void RetryConnection()
+    {
+        connectionStateText.text = "Connecting...";
+        StartCoroutine(InitialOffering());
     }
     // Update is called once per frame
     void Update()
@@ -63,6 +97,8 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         }
        
         PlayerCountText.text = PlayerCount.ToString();
+
+        submitScoresManager = FindObjectOfType<SubmitScoresManager>();
     }
     // creating room for 4 players
     public void Create4PlayerGame(string gameType)
@@ -166,6 +202,7 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         StartCoroutine(SequenceAfterRoomCreation(player));
 
        
+        
     }
    
     IEnumerator SpawnManagers()
@@ -173,8 +210,9 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         yield return new WaitForSeconds(1f);
         
         runnerInstance.Spawn(GameSessionManagement, UnityEngine.Vector2.zero);
+        runnerInstance.Spawn(submitScoresmanagement, UnityEngine.Vector2.zero);
         yield return new WaitForSeconds(2f);
-       // runnerInstance.Spawn(WeaponSpawner, Vector2.zero);
+       
     }
     IEnumerator SequenceAfterRoomCreation(PlayerRef player)
     {
@@ -194,6 +232,11 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
           
 
+        }
+        if (PlayerPrefs.HasKey("ConnectedWalletAddress"))
+        {
+            string address = PlayerPrefs.GetString("ConnectedWalletAddress");
+            submitScoresManager.RPC_RegisterWallet(address, player);
         }
 
     }
@@ -226,6 +269,9 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         CreateRoomBtn.interactable = true;
         JoinRoomBtn.interactable = true;
+
+        connectionStateText.text = "Connection success";
+        lobbyJoined = true;
     }
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
@@ -277,7 +323,7 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public void CreateStakingRoom(int matchID)
     {
         int MatchName = matchID;
-        string randomSessionName = "Rm-" + MatchName.ToString();
+        string randomSessionName = MatchName.ToString();
 
         // customizing the Room/Session's properties
         var customProperties = new Dictionary<string, SessionProperty>();
@@ -299,7 +345,7 @@ public class FusionNetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         await runnerInstance.StartGame(new StartGameArgs()
         {
             GameMode = GameMode.Shared,
-            SessionName = "Rm-" + matchID,
+            SessionName = matchID.ToString(),
 
 
         });

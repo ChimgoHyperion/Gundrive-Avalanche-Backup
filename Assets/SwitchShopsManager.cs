@@ -7,20 +7,18 @@ public class SwitchShopsManager : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    public CanvasGroup  SkinSection, CoinSection,WithdrawSection;
+    public CanvasGroup  SkinSection, NFTClaimSection;
     void Start()
     {
         switch (ShopSelectionManager.instance.selectedShopName)
         {
-            case "CoinShop":
-               ActivateCoinSection();
+            case "NFTClaimSection":
+               ActivateNFTClaimSection();
                 break;
             case "SkinShop":
                ActivateSkinsSection();
                 break;
-            case "WithdrawSection":
-               ActivateWithdrawalSection();
-                break;
+           
 
         }
     }
@@ -35,47 +33,27 @@ public class SwitchShopsManager : MonoBehaviour
         SkinSection.blocksRaycasts = true;
 
 
-        CoinSection.alpha = 0f;
-        CoinSection.interactable = false;
-        CoinSection.blocksRaycasts = false;
 
-        WithdrawSection.alpha = 0f;
-        WithdrawSection.interactable = false;
-        WithdrawSection.blocksRaycasts = false;
+        NFTClaimSection.alpha = 0f;
+        NFTClaimSection.interactable = false;
+        NFTClaimSection.blocksRaycasts = false;
     }
 
-    public void ActivateCoinSection()
+    public void ActivateNFTClaimSection()
     {
         SkinSection.alpha = 0f;
         SkinSection.interactable = false;
         SkinSection.blocksRaycasts = false;
 
 
-        CoinSection.alpha = 1.0f;
-        CoinSection.interactable = true;
-        CoinSection.blocksRaycasts = true;
+        NFTClaimSection.alpha = 1.0f;
+        NFTClaimSection.interactable = true;
+        NFTClaimSection.blocksRaycasts = true;
 
-        WithdrawSection.alpha = 0f;
-        WithdrawSection.interactable = false;
-        WithdrawSection.blocksRaycasts = false;
+      
     }
 
-    public void ActivateWithdrawalSection()
-    {
-        SkinSection.alpha = 0f;
-        SkinSection.interactable = false;
-        SkinSection.blocksRaycasts = false;
-
-
-        CoinSection.alpha = 0f;
-        CoinSection.interactable = false;
-        CoinSection.blocksRaycasts = false;
-
-        WithdrawSection.alpha = 1.0f;
-        WithdrawSection.interactable = true;
-        WithdrawSection.blocksRaycasts = true;
-    }
-
+   
     
    
 }

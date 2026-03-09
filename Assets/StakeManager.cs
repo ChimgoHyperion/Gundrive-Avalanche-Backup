@@ -135,7 +135,7 @@ public class StakeManager : MonoBehaviour
     // Only works if match is still WAITING (nobody joined yet)
     public async void CancelMatch()
     {
-        int matchId = matchID;
+        //int matchId = matchID;
 
         try
         {
@@ -145,7 +145,7 @@ public class StakeManager : MonoBehaviour
             var matchInfo = await ThirdwebContract.Read<object[]>(
                 contract: stakeToPlay,
                 method: "getMatch",
-                parameters: new object[] { matchId }
+                parameters: new object[] { matchID }
             );
 
             // status is the 5th return value from getMatch
@@ -160,14 +160,14 @@ public class StakeManager : MonoBehaviour
             }
 
             // ?? STEP 2 — Cancel The Match ?????????????????
-            Debug.Log("Cancelling match " + matchId + "...");
+            Debug.Log("Cancelling match " + matchID + "...");
 
             var receipt = await ThirdwebContract.Write(
                 wallet: ThirdwebManager.Instance.ActiveWallet,
                 contract: stakeToPlay,
                 method: "cancelMatch",
                 weiValue: 0,
-                parameters: new object[] { matchId }
+                parameters: new object[] { matchID }
             );
 
             Debug.Log("Match Cancelled! USDC refunded to your wallet");

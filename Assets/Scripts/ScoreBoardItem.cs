@@ -14,7 +14,11 @@ public class ScoreBoardItem : MonoBehaviour
    
     public TextMeshProUGUI playerUserNameText;
 
+    public TextMeshProUGUI playerWalletText;
+
     public string playerUserName;
+
+    public string playerWallet;
 
     public Image SelectedSkinImage;
 
@@ -26,7 +30,8 @@ public class ScoreBoardItem : MonoBehaviour
     }
     private void Update()
     {
-        
+        playerWalletText.text = playerWallet;
+
         playerUserNameText.text = playerUserName;
 
         SelectedSkinImage.sprite = selectedSkinSprite;

@@ -1,8 +1,12 @@
 ﻿using PlayFab;
 using PlayFab.ClientModels;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
+using Thirdweb;
+using Thirdweb.Unity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -43,8 +47,10 @@ public class SkinShopManager : MonoBehaviour
     public static List<string> cachedOwnedSkins = new List<string>();
 
     public GameObject ProccessingUI;
+
+    public TextMeshProUGUI SHCBalanceText; // drag in inspector
     // Start is called before the first frame update
-    void Start()
+    async void Start()
     {
         TotalCoins = CoinBalanceHolder.Instance.virtualCurrencyBalance;
 
@@ -101,63 +107,69 @@ public class SkinShopManager : MonoBehaviour
         //{
         //   StartCoroutine(delayBeforeWalletCheck());
         //}
+
+        shooterCoin = await ThirdwebManager.Instance.GetContract(
+           address: shooterCoinAddress,
+           chainId: 43113
+       );
+        await RefreshBalance();
     }
     // Update is called once per frame
     void Update()
     {
-        CoinBalanceText.text = "Coins :" + CoinBalanceHolder.Instance.virtualCurrencyBalance.ToString();
+        //  CoinBalanceText.text = "Coins :" + CoinBalanceHolder.Instance.virtualCurrencyBalance.ToString();
 
-       
+        
 
     }
-    IEnumerator delayBeforeWalletCheck()
-    {
-        yield return new WaitForSeconds(3f);
-        GetOwnedSkinsFromWallet();
-    }
-    void GetOwnedSkinsFromWallet()
-    {
-       //var userNFTs = Web3Manager.Instance.getUserNftSkins();
-       // foreach (SimpleNftData NFTData in userNFTs)
-       // {
-       //     Debug.Log(NFTData.name +"is owned");
+    //IEnumerator delayBeforeWalletCheck()
+    //{
+    //    yield return new WaitForSeconds(3f);
+    //    GetOwnedSkinsFromWallet();
+    //}
+    //void GetOwnedSkinsFromWallet()
+    //{
+    //   //var userNFTs = Web3Manager.Instance.getUserNftSkins();
+    //   // foreach (SimpleNftData NFTData in userNFTs)
+    //   // {
+    //   //     Debug.Log(NFTData.name +"is owned");
 
-       //     ownedSkins[NFTData.name] = "owned";
+    //   //     ownedSkins[NFTData.name] = "owned";
 
-       //     cachedOwnedSkins.Add(NFTData.name); // cache skins
-       //   //   hasFetchedSkins = true; // Set flag to prevent future API calls
-       //      ApplyOwnedSkins();
-       //     SaveSkinAsOwned(NFTData.name);
-       // }
-        //if (skin id exists in wallet)
-        //{
-        //    Debug.Log(Skin_ID + " is owned; // debug 
-        //    ownedSkins[Skin_ID] = "owned"; // add the skinid(name) to the ownedskins dictionary.
+    //   //     cachedOwnedSkins.Add(NFTData.name); // cache skins
+    //   //   //   hasFetchedSkins = true; // Set flag to prevent future API calls
+    //   //      ApplyOwnedSkins();
+    //   //     SaveSkinAsOwned(NFTData.name);
+    //   // }
+    //    //if (skin id exists in wallet)
+    //    //{
+    //    //    Debug.Log(Skin_ID + " is owned; // debug 
+    //    //    ownedSkins[Skin_ID] = "owned"; // add the skinid(name) to the ownedskins dictionary.
 
-        //    cachedOwnedSkins.Add(Skin_ID); // cache skins
-        //    hasFetchedSkins = true; // Set flag to prevent future API calls
-        //    ApplyOwnedSkins();
+    //    //    cachedOwnedSkins.Add(Skin_ID); // cache skins
+    //    //    hasFetchedSkins = true; // Set flag to prevent future API calls
+    //    //    ApplyOwnedSkins();
 
-        //    call save function to save it to the database on playfab 
-        ///  SaveSkinAsOwned(skinID);
-
-
-        //    SkinBuyButtons[Skin_ID].SetActive(false);// deactivate buy buttons
-        //    SkinSelectionButtons[Skin_ID].interactable = true; // can select skin. (we can create extra buttons as an alternative)
-        //}
+    //    //    call save function to save it to the database on playfab 
+    //    ///  SaveSkinAsOwned(skinID);
 
 
-        //else
-        //{
-        //    Debug.Log(Skin_ID + " is NOT owned.");
-        //    ownedSkins[Skin_ID] = "not_owned";
+    //    //    SkinBuyButtons[Skin_ID].SetActive(false);// deactivate buy buttons
+    //    //    SkinSelectionButtons[Skin_ID].interactable = true; // can select skin. (we can create extra buttons as an alternative)
+    //    //}
 
-        //    // Example: Disable the Gun button
-        //    // yourGunButtonDictionary[GunID].interactable = false;
-        //    SkinBuyButtons[Skin_ID].SetActive(true);// dont allow selection btn to show
-        //    SkinSelectionButtons[Skin_ID].interactable = false;
-        //}
-    }
+
+    //    //else
+    //    //{
+    //    //    Debug.Log(Skin_ID + " is NOT owned.");
+    //    //    ownedSkins[Skin_ID] = "not_owned";
+
+    //    //    // Example: Disable the Gun button
+    //    //    // yourGunButtonDictionary[GunID].interactable = false;
+    //    //    SkinBuyButtons[Skin_ID].SetActive(true);// dont allow selection btn to show
+    //    //    SkinSelectionButtons[Skin_ID].interactable = false;
+    //    //}
+    //}
     void GetOwnedSkinsFromPlayfab()
     {
         if (Time.time - LoggedInManager.Instance.LastCallsTime < LoggedInManager.Instance.PurchasingApiCallInterval)
@@ -255,7 +267,7 @@ public class SkinShopManager : MonoBehaviour
     }
     public void BuySkin(string SkinName)
     {
-
+        // buying with web 2
         if (CoinBalanceHolder.Instance.virtualCurrencyBalance >= SkinPrices[CurrentIDPrice])
         {
             //int newCoinBalance = TotalCoins - GunPrices[CurrentIDPrice];// subtract balance
@@ -274,11 +286,106 @@ public class SkinShopManager : MonoBehaviour
             return;
             // throw balance error message
         }
-
+        // buying with web 3 
 
     }
 
 
-   
+    [Header("ShooterCoin Contract")]
+    private string shooterCoinAddress = "0xA2214B51Bc444f4A1065f629F3Aac1C4720f040c";
+    private ThirdwebContract shooterCoin;
 
+    [Header("Your Store Wallet — receives the SHC payment")]
+    public string StoreWalletAddress = "0xfc7Bf373B5c5B751ad7eA31c39d8eF29349798aF";
+
+    public System.Collections.Generic.Dictionary<string, int> SkinPricesSHC = new()
+    {
+        { "AdaezeSkin",    1  },
+        { "Nnae-MechaSkin",  5 },
+       // { "ShadowSkin",   200 },
+    };
+    // ── Drop-in replacement for your existing BuySkin() ───────────────────
+    public async void BuySkinWithSHC(string skinName)
+    {
+        if (ThirdwebManager.Instance.ActiveWallet == null)
+        {
+            Debug.LogError("[Shop] No wallet connected.");
+            return;
+        }
+
+        if (!SkinPricesSHC.ContainsKey(skinName))
+        {
+            Debug.LogError($"[Shop] Unknown skin: {skinName}");
+            return;
+        }
+
+        int price = SkinPricesSHC[skinName];
+
+        ProccessingUI.SetActive(true); // show loading — same as your original
+
+        try
+        {
+            string playerAddress = await ThirdwebManager.Instance.ActiveWallet.GetAddress();
+
+            // ── Step 1: Check player's SHC balance ────────────────────────
+            var rawBalance = await ThirdwebContract.Read<BigInteger>(
+                contract: shooterCoin,
+                method: "balanceOf",
+                parameters: new object[] { playerAddress }
+            );
+
+            BigInteger priceInWei = new BigInteger(price) * BigInteger.Pow(10, 18);
+
+            if (rawBalance < priceInWei)
+            {
+                // Not enough SHC — same as your original insufficient balance flow
+                ProccessingUI.SetActive(false);
+                InsufficientBalanceUI.SetActive(true);
+                return;
+            }
+
+            // ── Step 2: Transfer SHC from player → your store wallet ──────
+            // Player's wallet signs this — no approval needed for direct transfer
+            var receipt = await ThirdwebContract.Write(
+                wallet: ThirdwebManager.Instance.ActiveWallet,
+                contract: shooterCoin,
+                method: "transfer",
+                weiValue: 0,
+                parameters: new object[] { StoreWalletAddress, priceInWei }
+            );
+
+            Debug.Log($"[Shop] Payment TX: {receipt.TransactionHash}");
+
+            // ── Step 3: Payment confirmed — save skin ─────────────────────
+            SaveSkinAsOwned(skinName);
+            await RefreshBalance();
+            ProccessingUI.SetActive(false);
+            Debug.Log($"[Shop] {skinName} purchased for {price} SHC!");
+        }
+        catch (Exception e)
+        {
+            ProccessingUI.SetActive(false);
+            InsufficientBalanceUI.SetActive(true); // treat failed tx as insufficient
+            Debug.LogError($"[Shop] Purchase failed: {e.Message}");
+        }
+    }
+
+    //private void SaveSkinAsOwned(string skinName)
+    //{
+    //    // Your existing save logic here — same as before
+    //}
+    private async System.Threading.Tasks.Task RefreshBalance()
+    {
+        string playerAddress = await ThirdwebManager.Instance.ActiveWallet.GetAddress();
+
+        var rawBalance = await ThirdwebContract.Read<BigInteger>(
+            contract: shooterCoin,
+            method: "balanceOf",
+            parameters: new object[] { playerAddress }
+        );
+
+        BigInteger readable = rawBalance / BigInteger.Pow(10, 18);
+        SHCBalanceText.text = $"{readable} SHC";
+    }
 }
+

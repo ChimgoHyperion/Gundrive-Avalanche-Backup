@@ -131,7 +131,7 @@ public class WheelManager : MonoBehaviour
 
 
                 EarnedRewardUI.SetActive(true);
-                earnedStatementText.text = "5 Coins(0.0033$GUND)";
+                earnedStatementText.text = "5 SHC";
 
                 StartCoroutine(waitAndMoveToNextStep());
                 break;
@@ -147,7 +147,7 @@ public class WheelManager : MonoBehaviour
                 OnPlayerWin(10);
 
                 EarnedRewardUI.SetActive(true);
-                earnedStatementText.text = "10 Coins(0.0066$GUND)";
+                earnedStatementText.text = "10 SHC";
 
                 StartCoroutine(waitAndMoveToNextStep());
                 break;
@@ -165,11 +165,6 @@ public class WheelManager : MonoBehaviour
         "0xA2214B51Bc444f4A1065f629F3Aac1C4720f040c";
 
     private ThirdwebContract shooterCoin;
-
-  
-
-   
-
 
     public async void OnPlayerWin(int rewardAmount)
     {

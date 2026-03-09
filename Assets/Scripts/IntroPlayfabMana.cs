@@ -11,6 +11,7 @@ using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using Thirdweb.Unity;
 
 
 public class IntroPlayfabMana : MonoBehaviour
@@ -129,9 +130,18 @@ public class IntroPlayfabMana : MonoBehaviour
 
 
 
-        yield return new WaitUntil(()=>UnityAuthenticationManager.Instance.IDGotten);
+        yield return new WaitUntil(() => UnityAuthenticationManager.Instance.IDGotten);
 
         string customId = AuthID;// UnityAuthenticationManager.Instance.AuthID;
+
+
+
+        //var wallet = ThirdwebManager.Instance.ActiveWallet;
+        //if (wallet == null)
+        //{
+        //   yield break;
+        //}
+       // string ID = wallet.ToString();
         var request = new LoginWithCustomIDRequest
         {
             CustomId = customId,

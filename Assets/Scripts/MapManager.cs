@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static NFTAccessManager;
 
 public class MapManager : MonoBehaviour
 {
@@ -21,7 +22,14 @@ public class MapManager : MonoBehaviour
     public TextMeshProUGUI MapNameText,MapDescriptionText;
 
   [SerializeField]  public Color[] textcolors;
+    public Button IgboMapButton,EgyptMapButton;
 
+    private void OnEnable()
+    {
+        // Read the result that was already checked in the claim scene
+        IgboMapButton.interactable = NFTAccessManager.GameState.PlayerOwnsMapNFT;
+        EgyptMapButton.interactable= NFTKhufuAccessManager.GameState.PlayerOwnsMapNFT;
+    }
     public void ChooseMap(int MapNumber)
     {
         SelectedMapNumber = MapNumber;
@@ -64,7 +72,7 @@ public class MapManager : MonoBehaviour
             case 6:
                 MapNameText.text = "Ancient Egypt";
                 MapNameText.color = textcolors[6];
-                MapDescriptionText.text = "Deep inside King Tut's tomb";
+                MapDescriptionText.text = "Deep inside King Khufu's tomb";
                 break;
 
         }

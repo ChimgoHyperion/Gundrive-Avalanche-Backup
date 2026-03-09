@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using TMPro;
+using Thirdweb.Unity;
 
 public class PlayerStateManagerMulti : NetworkBehaviour
 {
@@ -15,6 +16,10 @@ public class PlayerStateManagerMulti : NetworkBehaviour
     [SerializeField] public int NetworkedselectedOption { get; set; }
     [Networked]
     [SerializeField] public string NetworkedNameSelection { get; set; }
+    [Networked]
+    [SerializeField] public string NetworkedConnectedWalletAddress { get; set; }
+    [Networked]
+    [SerializeField] public int NetworkedScore { get; set; }
 
     public TextMeshProUGUI NickNameText;
 
@@ -76,6 +81,15 @@ public class PlayerStateManagerMulti : NetworkBehaviour
 
         }
 
+        
+
+        if (PlayerPrefs.HasKey("ConnectedWalletAddress"))
+        {
+            string address = PlayerPrefs.GetString("ConnectedWalletAddress");
+            NetworkedConnectedWalletAddress = address; 
+        }
+
+        NetworkedScore = PlayerScript.NetworkedScore;
     }
     // Update is called once per frame
     void Update()
@@ -103,6 +117,8 @@ public class PlayerStateManagerMulti : NetworkBehaviour
             instantiatedScoreBoardItem.GetComponent<ScoreBoardItem>().playerUserName = NetworkedNameSelection;//or  moveandshoot.nickname
 
             instantiatedScoreBoardItem.GetComponent<ScoreBoardItem>().selectedSkinSprite = SelectedSprite;
+
+            instantiatedScoreBoardItem.GetComponent<ScoreBoardItem>().playerWallet = NetworkedConnectedWalletAddress;
         }
 
         WaitingRoomContent = GameObject.Find("Waiting room UI content");
