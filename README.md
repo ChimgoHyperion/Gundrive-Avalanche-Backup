@@ -12,15 +12,15 @@ GunDrive is an action-packed multiplayer shooter game that combines traditional 
 - **Multiplayer Combat**: Real-time multiplayer battles using Photon Fusion
 - **Multiple Maps**: 7 different battle arenas with unique environments
 - **Weapon Variety**: Multiple weapon types including rifles, lasers, fireball launchers, and other special weapons
-- **Enemy AI**: Intelligent enemy spawning and combat systems
+- **Enemy AI**: Intelligent enemy spawning and battle systems
 - **Power-ups**: Various power-ups including shields, health packs, and boost packs
 
 ### 🌐 Web3 Integration
 - **Wallet Connection**: Connect with Web3 wallets using Reown AppKit
-- **NFT Skins**: Own and use NFT character skins in-game
+- **NFT Skins**: Own and use NFT character skins in-game to get access to special maps
 - **Virtual Currency**: Earn and spend blockchain-based tokens
 - **Marketplace**: Purchase in-game items with cryptocurrency
-- **Hedera Testnet**: Built on Hedera blockchain for fast, low-cost transactions
+- **Avalanche Testnet**: Built on Avalanche blockchain for fast, low-cost transactions
 
 ### 🎨 Customization
 - **Character Skins**: Multiple character options and NFT-based skins
@@ -43,11 +43,11 @@ GunDrive is an action-packed multiplayer shooter game that combines traditional 
 
 ### Web3 Technologies
 - **Reown AppKit**: Wallet connection and Web3 integration
-- **Nethereum**: Ethereum/Hedera blockchain interaction
+- **Nethereum**: EVM blockchain interaction
 - **ERC-20**: Token standard for virtual currency
-- **ERC-721**: NFT standard for character skins
-- **IPFS**: Decentralized storage for NFT metadata
-- **Cloudinary**: Image and metadata hosting
+- **ERC-1155**: NFT standard for character skins
+- **Thirdweb gaming kit**: Used to interact with Deployed smart contracts
+
 
 ### Additional Packages
 - **Cinemachine**: Camera system
@@ -65,7 +65,7 @@ GunDrive is an action-packed multiplayer shooter game that combines traditional 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/gundrive-game.git
+   git clone https://github.com/yourusername/gundrive-avalanche-backup.git
    cd gundrive-game
    ```
 
@@ -78,10 +78,9 @@ GunDrive is an action-packed multiplayer shooter game that combines traditional 
    - Navigate to `Assets/Scripts/web3/Web3Manager.cs`
    - Update the following configuration:
      - `projectId`: Your Reown project ID
-     - `erc721ContractAddressNFT`: Your NFT contract address
+     - `erc1155ContractAddressNFT`: Your NFT contract address
      - `tokenContractAddress`: Your ERC-20 token contract address
-     - `pinataApiKey` & `pinataSecretApiKey`: Pinata IPFS credentials
-     - `cloudName` & `uploadPreset`: Cloudinary configuration
+     -  thirdweb client ID
 
 4. **Configure PlayFab**
    - Set up a PlayFab account
@@ -107,10 +106,8 @@ GunDrive is an action-packed multiplayer shooter game that combines traditional 
 The game requires several Web3 services to be configured:
 
 1. **Reown AppKit**: For wallet connections
-2. **Hedera Testnet**: For blockchain transactions
-3. **Pinata**: For IPFS storage
-4. **Cloudinary**: For image hosting
-
+2. **Avalanche Fuji Testnet**: For blockchain transactions
+3. **Thirdweb sdk**: For smart contract interactions
 ### PlayFab Configuration
 - Set up PlayFab project
 - Configure leaderboards
