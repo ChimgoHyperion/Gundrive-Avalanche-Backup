@@ -76,16 +76,8 @@ public class NFTKhufuAccessManager : MonoBehaviour
                 _nftContract,
                "claim",// "function claim(address _receiver, uint256 _tokenId, uint256 _quantity, address _currency, uint256 _pricePerToken, (bytes32[] proof, uint256 quantityLimitPerWallet, uint256 pricePerToken, address currency) _allowlistProof, bytes _data)",
                 0,              // weiValue (no AVAX sent since it's free)
-                new object[]
-                {
-                playerAddress,   // _receiver
-                1,               // _tokenId
-                1,               // _quantity
-                nativeCurrency,  // _currency
-                0,               // _pricePerToken
-                allowlistProof,  // _allowlistProof
-                "0x"             // _data
-                }
+                new object[] { playerAddress, 1, 1, nativeCurrency, 0, allowlistProof, new byte[0] }
+
             );
 
             Debug.Log($"[NFT] Claimed! TX: {receipt.TransactionHash}");
@@ -117,7 +109,7 @@ public class NFTKhufuAccessManager : MonoBehaviour
             parameters: new object[] { playerAddress, 1 }  // tokenId 0
         );
 
-        bool ownsNFT = balance > 2;
+        bool ownsNFT = balance > 0;
 
         if (MapButton != null)
             MapButton.interactable = ownsNFT;
