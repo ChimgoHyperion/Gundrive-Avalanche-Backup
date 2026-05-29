@@ -433,7 +433,7 @@ public class MultiplayerMoveAndShoot : NetworkBehaviour
             
             lastAttacker.GetComponent<MultiplayerMoveAndShoot>().NetworkedScore += 1;
             int newScore = lastAttacker.GetComponent<MultiplayerMoveAndShoot>().NetworkedScore;
-            lastAttacker.GetComponent<MultiplayerMoveAndShoot>().SubmitScore(lastAttacker.GetComponent<NetworkObject>(), newScore);
+          //  lastAttacker.GetComponent<MultiplayerMoveAndShoot>().SubmitScore(lastAttacker.GetComponent<NetworkObject>(), newScore);
         }
        
         StartCoroutine(waitBeforeRespawn());
@@ -524,6 +524,10 @@ public class MultiplayerMoveAndShoot : NetworkBehaviour
         joyStickGroup.blocksRaycasts = false;
         joyStickGroup.alpha = 0;
         UIControls.SetActive(false);
+
+     //   lastAttacker.GetComponent<MultiplayerMoveAndShoot>().SubmitScore(lastAttacker.GetComponent<NetworkObject>(), NetworkedScore);
+
+        SubmitScore(GetComponent<NetworkObject>(), NetworkedScore);
     }
 
     public void SubmitScore(NetworkObject player, int newscore)

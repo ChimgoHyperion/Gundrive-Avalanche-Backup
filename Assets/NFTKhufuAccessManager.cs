@@ -109,7 +109,7 @@ public class NFTKhufuAccessManager : MonoBehaviour
             parameters: new object[] { playerAddress, 1 }  // tokenId 0
         );
 
-        bool ownsNFT = balance > 0;
+        bool ownsNFT = balance > 1;
 
         if (MapButton != null)
             MapButton.interactable = ownsNFT;

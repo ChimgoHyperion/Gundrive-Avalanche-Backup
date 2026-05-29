@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8181565793594837559}
   - component: {fileID: 1803634151697798491}
   - component: {fileID: 5984560813385462462}
+  - component: {fileID: 2780266391841768092}
   m_Layer: 0
   m_Name: Game Manager Multiplayer
   m_TagString: Untagged
@@ -45,9 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b76a36f864a8d42e0865f4f39293cb35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isTeamBased: 0
-  isFreeforAll: 0
-  is1V1: 0
   playersInRoom: []
   WaitCompleted: 0
   countdownTime: 30
@@ -62,6 +60,7 @@ MonoBehaviour:
   - {fileID: 4422784358714260439, guid: 6abf27f0701804943acf702fd5e0d60e, type: 3}
   timeLeft: 5
   triggeredCountdown: 0
+  submitScoresManager: {fileID: 0}
 --- !u!114 &5984560813385462462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80,4 +79,19 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 1803634151697798491}
+  - {fileID: 2780266391841768092}
   ForceRemoteRenderTimeframe: 0
+--- !u!114 &2780266391841768092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6373157608371497485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aa0f49e4d6111e46bf06ed89d289f6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _NetworkedWalletAddresses: []
+  _NetworkedScores: 

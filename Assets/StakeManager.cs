@@ -192,6 +192,9 @@ public class StakeManager : MonoBehaviour
         }
     }
 
-
+    public void TestCreateStakingMatch()
+    {
+        FusionNetworkManager.networkManagerInstance.CreateStakingRoom(1111);
+    }
 
 }

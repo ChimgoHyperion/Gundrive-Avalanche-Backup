@@ -125,4 +125,11 @@ public class JoiningManager : MonoBehaviour
             Debug.LogError("JoinMatch failed: " + e.Message);
         }
     }
+
+
+    public void TestJoinStakingRoom()
+    {
+        int.TryParse(RoomToJoinField.text, out int value);
+        FusionNetworkManager.networkManagerInstance.ConnecToSpecificStakingSession(value);
+    }
 }
