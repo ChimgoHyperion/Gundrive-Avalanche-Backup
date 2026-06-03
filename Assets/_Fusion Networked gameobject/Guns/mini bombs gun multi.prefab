@@ -136,11 +136,13 @@ MonoBehaviour:
   joystick: {fileID: 0}
   starttimebtwShots: 0.05
   bulletsLeft: 1000
-  MaxBullets: 0
+  MaxBullets: 1000
   ammoBar: {fileID: 0}
   shootingClip: {fileID: 8300000, guid: 8490df2b29765dd4e811e3bdd1a7985e, type: 3}
   inventory: {fileID: 0}
   weaponHolder: {fileID: 0}
+  Attacker: {fileID: 0}
+  movementandShooting: {fileID: 0}
 --- !u!114 &2316038457212357146
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2022334025984186303}
   - component: {fileID: 5689244387917403556}
   - component: {fileID: 3643776441314475476}
+  - component: {fileID: -2290991192698455585}
   m_Layer: 0
   m_Name: 'portal box multi '
   m_TagString: Portal
@@ -343,3 +344,21 @@ PolygonCollider2D:
       - {x: 3.159492, y: -8.042343}
       - {x: 3.3711326, y: -8.027226}
   m_UseDelaunayMesh: 0
+--- !u!114 &-2290991192698455585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2955444850646296130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 1426294494
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours: []
+  ForceRemoteRenderTimeframe: 0

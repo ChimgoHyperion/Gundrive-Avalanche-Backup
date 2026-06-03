@@ -100,12 +100,11 @@ public class RiffleGunShootingScriptMulti : NetworkBehaviour
         // finished bullets
         if (bulletsLeft <= 0)
         {
-            //  inventory.isFilled = false;
-            //   weaponHolder.RPC_DropGun(); // carries the essential RPC
+           
 
             // wait a while
 
-            StartCoroutine(WaitBeforeRefill());
+          //  StartCoroutine(WaitBeforeRefill());
          
           
         }

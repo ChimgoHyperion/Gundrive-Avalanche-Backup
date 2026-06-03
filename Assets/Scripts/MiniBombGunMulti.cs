@@ -71,7 +71,7 @@ public class MiniBombGunMulti : NetworkBehaviour
 
         if (bulletsLeft <= 0)
         {
-            StartCoroutine(WaitBeforeRefill());
+          //  StartCoroutine(WaitBeforeRefill());
         }
     }
     IEnumerator WaitBeforeRefill()

@@ -821,6 +821,8 @@ MonoBehaviour:
   SelectedSprite: {fileID: 0}
   _NetworkedselectedOption: 0
   _NetworkedNameSelection: 
+  _NetworkedConnectedWalletAddress: 
+  _NetworkedScore: 0
   NickNameText: {fileID: 691381411569702203}
   instantiatedScoreBoardItem: {fileID: 0}
   ScoreBoardContent: {fileID: 0}
@@ -3183,6 +3185,11 @@ MonoBehaviour:
   - {fileID: 2975457513920910647}
   currentGunIndex: 0
   _NetworkedcurrentWeaponSelection: 0
+  canPickBullets: 0
+  weaponLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  radius: 4.95
 --- !u!61 &1441369052596767128
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6350,6 +6357,8 @@ MonoBehaviour:
   SelectedSprite: {fileID: 0}
   _NetworkedselectedOption: 0
   _NetworkedNameSelection: 
+  _NetworkedConnectedWalletAddress: 
+  _NetworkedScore: 0
   NickNameText: {fileID: 691381411569702203}
   instantiatedScoreBoardItem: {fileID: 0}
   ScoreBoardContent: {fileID: 0}
@@ -14888,7 +14897,7 @@ MonoBehaviour:
   HealthClip: {fileID: 8300000, guid: 7066f66237e55fd49b3aff68a2ba1c2a, type: 3}
   BoostClip: {fileID: 8300000, guid: fb646c47515ad6d4d92c54eaf84ce187, type: 3}
   collectionClip: {fileID: 8300000, guid: 788ea30b7ddccd34190a0609ac6f2100, type: 3}
-  polycoinClip: {fileID: 8300000, guid: 7066f66237e55fd49b3aff68a2ba1c2a, type: 3}
+  coinClip: {fileID: 0}
   buttonClick: {fileID: 8300000, guid: 2e7be58c729e48140a898e57f4463fcc, type: 3}
   enemydeathClip: {fileID: 8300000, guid: 8490df2b29765dd4e811e3bdd1a7985e, type: 3}
   PlayerDeathClip: {fileID: 8300000, guid: cf79fb4662e0d194fba6cb7587126e5e, type: 3}
