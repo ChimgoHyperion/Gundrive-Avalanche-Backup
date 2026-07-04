@@ -133,7 +133,7 @@ public class WeaponHolderMulti : NetworkBehaviour
     }
     private void OnDrawGizmos()
     {
-        Gizmos.DrawSphere(transform.position, radius);
+        Gizmos.DrawWireSphere(transform.position, radius);
         Gizmos.color = Color.blue;
     }
 

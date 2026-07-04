@@ -3189,7 +3189,7 @@ MonoBehaviour:
   weaponLayer:
     serializedVersion: 2
     m_Bits: 2048
-  radius: 4.95
+  radius: 5.41
 --- !u!61 &1441369052596767128
 BoxCollider2D:
   m_ObjectHideFlags: 0
