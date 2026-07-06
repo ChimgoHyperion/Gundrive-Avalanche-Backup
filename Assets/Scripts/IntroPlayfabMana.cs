@@ -38,11 +38,14 @@ public class IntroPlayfabMana : MonoBehaviour
     public string AuthID = null;
 
     // --- Connectivity ---
-    // NOTE: A lightweight HEAD request is used instead of Application.internetReachability.
-    // internetReachability is unreliable on WebGL builds - browsers don't expose real
-    // network state to Unity the way native platforms do, so it can report "connected"
-    // when the page has no actual route out, or fail to update when connectivity returns.
-    private const string ConnectivityCheckUrl = "https://clients3.google.com/generate_204";
+    // We can't independently "ping" for connectivity before authenticating: the
+    // PlayFab SDK throws a client-side "Must be logged in" guard on nearly every
+    // ClientAPI call pre-session, and pinging an external domain (e.g. Google) fails
+    // in WebGL builds due to CORS - third-party domains don't send an
+    // Access-Control-Allow-Origin header, so the browser blocks it regardless of
+    // host. Application.internetReachability is also unreliable on WebGL, since the
+    // browser sandbox doesn't expose real network state. So the login attempt
+    // itself doubles as the connectivity check (see ConnectivityMonitorLoop/Login).
     private const float ConnectivityPollInterval = 5f;
 
     private bool hasInternetConnection;
@@ -66,15 +69,15 @@ public class IntroPlayfabMana : MonoBehaviour
     /// </summary>
     private IEnumerator ConnectivityMonitorLoop()
     {
-        while (true)
+        // We can't ping PlayFab for connectivity before logging in - the SDK throws
+        // "Must be logged in to call this method" as a client-side guard on nearly
+        // every ClientAPI call, even ones like GetTime that don't require a session
+        // server-side. So instead, the login attempt itself is the connectivity
+        // check: success means online, failure (for connectivity reasons) means
+        // offline, and we retry on a timer until it succeeds.
+        while (!LoggedInManager.Instance.isLoggedIn)
         {
-            yield return StartCoroutine(CheckRealConnectivity(connected =>
-            {
-                hasInternetConnection = connected;
-                UpdateOnlineStatusUI(connected);
-            }));
-
-            if (hasInternetConnection && !loginAttempted && !LoggedInManager.Instance.isLoggedIn)
+            if (!loginAttempted)
             {
                 loginAttempted = true;
                 StartCoroutine(Login());
@@ -82,18 +85,9 @@ public class IntroPlayfabMana : MonoBehaviour
 
             yield return new WaitForSeconds(ConnectivityPollInterval);
         }
-    }
 
-    private IEnumerator CheckRealConnectivity(System.Action<bool> onResult)
-    {
-        using (UnityWebRequest request = UnityWebRequest.Head(ConnectivityCheckUrl))
-        {
-            request.timeout = 5;
-            yield return request.SendWebRequest();
-
-            bool connected = request.result == UnityWebRequest.Result.Success;
-            onResult?.Invoke(connected);
-        }
+        hasInternetConnection = true;
+        UpdateOnlineStatusUI(true);
     }
 
     private void UpdateOnlineStatusUI(bool connected)
@@ -179,10 +173,30 @@ public class IntroPlayfabMana : MonoBehaviour
 
     private void OnLoginError(PlayFabError error)
     {
-        noInternetPanel.SetActive(true);
-        onlineStatusText.text = "Offline";
-        loginAttempted = false; // allow the connectivity loop to retry later
         Debug.LogWarning("Error while logging in / creating account: " + error.GenerateErrorReport());
+
+        // HttpCode 0 / ConnectionError / ServiceUnavailable indicate the request never
+        // actually reached PlayFab or PlayFab itself is down - that's a real connectivity
+        // issue. Anything else (e.g. disabled API features, bad params) is a config/API
+        // error and should NOT be reported as "no internet".
+        bool isConnectivityIssue = error.HttpCode == 0
+            || error.Error == PlayFabErrorCode.ConnectionError
+            || error.Error == PlayFabErrorCode.ServiceUnavailable;
+
+        if (isConnectivityIssue)
+        {
+            noInternetPanel.SetActive(true);
+            onlineStatusText.text = "Offline";
+            loginAttempted = false; // safe to retry once connectivity actually returns
+        }
+        else
+        {
+            // A real API/config error (e.g. "Player creations have been disabled for
+            // this API"). Retrying on a timer just spams PlayFab with the same failure -
+            // surface it instead of looping the offline panel.
+            Debug.LogError("Login failed for a non-connectivity reason - check PlayFab title settings " +
+                "(e.g. 'Allow client to automatically create new players'). Will not auto-retry.");
+        }
     }
 
     #endregion
