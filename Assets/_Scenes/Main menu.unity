@@ -3605,17 +3605,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameWindow: {fileID: 409667973}
   leaderboardWindow: {fileID: 1765640334}
-  LoggingInPanel: {fileID: 726828807}
+  loggingInPanel: {fileID: 726828807}
+  noInternetPanel: {fileID: 231830668}
   nameError: {fileID: 0}
   nameInput: {fileID: 1661250695}
   rowPrefab: {fileID: 4764916803309339391, guid: 43268d32dea83e8439ebc70c3ed3a568, type: 3}
   rowsParent: {fileID: 1377864585}
-  noInternetpanel: {fileID: 231830668}
-  hasInternetConnection: 0
-  OnlineStatusText: {fileID: 1292472916}
+  onlineStatusText: {fileID: 1292472916}
   currentNameText: {fileID: 102899776}
-  ChangeNameButton: {fileID: 133560178}
-  LeaderboardButton: {fileID: 836286193}
+  changeNameButton: {fileID: 133560178}
+  leaderboardButton: {fileID: 836286193}
   AuthID: 
 --- !u!4 &343553009
 Transform:

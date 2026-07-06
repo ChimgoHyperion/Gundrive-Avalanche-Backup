@@ -1,147 +1,140 @@
 ﻿using PlayFab;
-using PlayFab.AuthenticationModels;
 using PlayFab.ClientModels;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
-using Thirdweb.Unity;
 
-
+/// <summary>
+/// Handles automatic PlayFab login on scene start, display-name setup,
+/// and leaderboard fetch/display. Also monitors connectivity so UI can
+/// reflect online/offline state.
+/// </summary>
 public class IntroPlayfabMana : MonoBehaviour
 {
     [Header("Windows")]
-    public GameObject nameWindow;
-    public GameObject leaderboardWindow;
-    public GameObject LoggingInPanel;
-    // public GameObject coverimage; // for entering crypto address
+    [SerializeField] private GameObject nameWindow;
+    [SerializeField] private GameObject leaderboardWindow;
+    [SerializeField] private GameObject loggingInPanel;
+    [SerializeField] private GameObject noInternetPanel;
 
-    [Header("Display name window")]
-    public GameObject nameError;
-    public InputField nameInput;
+    [Header("Display Name")]
+    [SerializeField] private GameObject nameError;
+    [SerializeField] private InputField nameInput;
 
     [Header("Leaderboard")]
-    public GameObject rowPrefab;
-    public Transform rowsParent;
-    bool ison = true;
+    [SerializeField] private GameObject rowPrefab;
+    [SerializeField] private Transform rowsParent;
 
-    string loggedInplayfabID;
-    public GameObject noInternetpanel;
+    [Header("Status UI")]
+    [SerializeField] private TextMeshProUGUI onlineStatusText;
+    [SerializeField] private TextMeshProUGUI currentNameText;
+    [SerializeField] private Button changeNameButton;
+    [SerializeField] private Button leaderboardButton;
 
-    [SerializeField] bool hasInternetConnection;
-    public TextMeshProUGUI OnlineStatusText, currentNameText;
-    public Button ChangeNameButton, LeaderboardButton;
+    [Header("Auth")]
+    public string AuthID = null;
 
-  
-    public string AuthID=null;
-    // Start is called before the first frame update
-    void Awake()
+    // --- Connectivity ---
+    // NOTE: A lightweight HEAD request is used instead of Application.internetReachability.
+    // internetReachability is unreliable on WebGL builds - browsers don't expose real
+    // network state to Unity the way native platforms do, so it can report "connected"
+    // when the page has no actual route out, or fail to update when connectivity returns.
+    private const string ConnectivityCheckUrl = "https://clients3.google.com/generate_204";
+    private const float ConnectivityPollInterval = 5f;
+
+    private bool hasInternetConnection;
+    private string loggedInPlayFabId;
+    private bool loginAttempted;
+
+    #region Unity Lifecycle
+
+    private void Start()
     {
-
-        //  DontDestroyOnLoad(gameObject);
+        StartCoroutine(ConnectivityMonitorLoop());
     }
 
-    IEnumerator CheckInternetLoop()
+    #endregion
+
+    #region Connectivity
+
+    /// <summary>
+    /// Continuously polls real connectivity (not just Unity's reachability enum),
+    /// updates status UI, and kicks off login the first time we detect we're online.
+    /// </summary>
+    private IEnumerator ConnectivityMonitorLoop()
     {
         while (true)
         {
-            bool connected = Application.internetReachability != NetworkReachability.NotReachable;
-            OnlineStatusText.text = connected ? "Online" : "Offline";
-            OnlineStatusText.color = connected ? Color.green : Color.red;
+            yield return StartCoroutine(CheckRealConnectivity(connected =>
+            {
+                hasInternetConnection = connected;
+                UpdateOnlineStatusUI(connected);
+            }));
 
-            ChangeNameButton.interactable = connected ? true : false;// can change name only if you logged in
-            LeaderboardButton.interactable = connected ? true : false;
-            yield return new WaitForSeconds(5f);
+            if (hasInternetConnection && !loginAttempted && !LoggedInManager.Instance.isLoggedIn)
+            {
+                loginAttempted = true;
+                StartCoroutine(Login());
+            }
 
-
+            yield return new WaitForSeconds(ConnectivityPollInterval);
         }
     }
-    // To Check for internet connection before loging in
-    IEnumerator CheckInternetConnection()
+
+    private IEnumerator CheckRealConnectivity(System.Action<bool> onResult)
     {
-
-
-        bool connected = Application.internetReachability != NetworkReachability.NotReachable;
-        yield return new WaitForSeconds(1f);
-        yield return new WaitUntil(() => AuthID != null);
-        if (connected) {
-            hasInternetConnection = true;
-            Debug.Log("Internet connection available.");
-            OnlineStatusText.text = "Online";
-            OnlineStatusText.color = Color.green;
-          //  Login();
-            StartCoroutine(Login());
-        }
-        else
+        using (UnityWebRequest request = UnityWebRequest.Head(ConnectivityCheckUrl))
         {
-            hasInternetConnection = false;
-            noInternetpanel.SetActive(false);
-            Debug.Log("No internet connection.");
-            OnlineStatusText.text = "Offline";
-            OnlineStatusText.color = Color.white;
+            request.timeout = 5;
+            yield return request.SendWebRequest();
+
+            bool connected = request.result == UnityWebRequest.Result.Success;
+            onResult?.Invoke(connected);
         }
-     
     }
 
+    private void UpdateOnlineStatusUI(bool connected)
+    {
+        onlineStatusText.text = connected ? "Online" : "Offline";
+        onlineStatusText.color = connected ? Color.green : Color.red;
+
+        changeNameButton.interactable = connected;
+        leaderboardButton.interactable = connected;
+
+        // Fixed: previously this branch called SetActive(false) on no connection,
+        // hiding the "no internet" panel exactly when it should be shown.
+        noInternetPanel.SetActive(!connected);
+    }
 
     public void TryAgain()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    void Start()
+
+    public void RefreshLogin()
     {
-
-        StartCoroutine(CheckInternetConnection());
-      
-
-        StartCoroutine(CheckInternetLoop());
-
+        LoggedInManager.Instance.isLoggedIn = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    #endregion
 
+    #region Login
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator Login()
     {
-        //if (LoggedInManager.Instance.isLoggedIn)
-        //{
-        //    OnlineStatusText.text = "Online";
-        //    OnlineStatusText.color = Color.green;
-        //}
-        //else
-        //{
-        //    OnlineStatusText.text = "Offline";
-        //    OnlineStatusText.color = Color.white;
-        //}
-    }
-    IEnumerator Login()
-    {
-        if (LoggedInManager.Instance.isLoggedIn)  yield break;
+        if (LoggedInManager.Instance.isLoggedIn)
+            yield break;
 
-        LoggingInPanel.SetActive(true);
-
-
-
-
+        loggingInPanel.SetActive(true);
 
         yield return new WaitUntil(() => UnityAuthenticationManager.Instance.IDGotten);
 
-        string customId = AuthID;// UnityAuthenticationManager.Instance.AuthID;
+        string customId = AuthID;
 
-
-
-        //var wallet = ThirdwebManager.Instance.ActiveWallet;
-        //if (wallet == null)
-        //{
-        //   yield break;
-        //}
-       // string ID = wallet.ToString();
         var request = new LoginWithCustomIDRequest
         {
             CustomId = customId,
@@ -151,114 +144,97 @@ public class IntroPlayfabMana : MonoBehaviour
                 GetPlayerProfile = true
             }
         };
-        PlayFabClientAPI.LoginWithCustomID(request, OnSuccess, OnError);
+
+        PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginError);
     }
 
-  
-
-   
-    void OnSuccess(LoginResult result)
+    private void OnLoginSuccess(LoginResult result)
     {
         LoggedInManager.Instance.isLoggedIn = true;
-        loggedInplayfabID = result.PlayFabId;
-        LoggingInPanel.SetActive(false);
-        OnlineStatusText.text = "Online";
-        ChangeNameButton.interactable = true;// can change name only if you logged in
-        LeaderboardButton.interactable = true;
+        loggedInPlayFabId = result.PlayFabId;
+        loggingInPanel.SetActive(false);
+
+        onlineStatusText.text = "Online";
+        changeNameButton.interactable = true;
+        leaderboardButton.interactable = true;
 
         Debug.Log("Successful login/account created!");
-        string name = null;
 
-        if (result.InfoResultPayload.PlayerProfile != null)
-            name = result.InfoResultPayload.PlayerProfile.DisplayName;
+        string displayName = result.InfoResultPayload?.PlayerProfile?.DisplayName;
+
+        if (!string.IsNullOrEmpty(displayName))
+        {
+            PlayerPrefs.SetString("PlayerNickname", displayName);
+            currentNameText.text = displayName;
+            nameWindow.SetActive(false);
+        }
+        else
+        {
+            nameWindow.SetActive(true);
+        }
+
+        GetLeaderboardAroundPlayer();
+        CoinBalanceHolder.Instance.GetInventoryCoinBalance();
+    }
+
+    private void OnLoginError(PlayFabError error)
+    {
+        noInternetPanel.SetActive(true);
+        onlineStatusText.text = "Offline";
+        loginAttempted = false; // allow the connectivity loop to retry later
+        Debug.LogWarning("Error while logging in / creating account: " + error.GenerateErrorReport());
+    }
+
+    #endregion
+
+    #region Display Name
+
+    public void SubmitNameButton()
+    {
+        string name = nameInput.text;
+
+        if (name.Length < 1 || name.Length >= 15)
+        {
+            if (nameError != null)
+                nameError.SetActive(true);
+            return;
+        }
 
         PlayerPrefs.SetString("PlayerNickname", name);
 
-        currentNameText.text = name;
-
-        if (name == null)
-            nameWindow.SetActive(true);
-        else
-            nameWindow.SetActive(false);
-
-        GetLeaderboardOnStart(); // called On first login
-        CoinBalanceHolder.Instance.GetInventoryCoinBalance();// called on first login
-    }
-    public void SubmitNameButton()
-    {
-        if (nameInput.text.Length >= 1 && nameInput.text.Length < 15)
+        var request = new UpdateUserTitleDisplayNameRequest
         {
-            PlayerPrefs.SetString("PlayerNickname", nameInput.text);
-            var request = new UpdateUserTitleDisplayNameRequest
-            {
-                DisplayName = nameInput.text,// PlayerPrefs.GetString("PlayerNickname"),
+            DisplayName = name
+        };
 
-            };
-
-            PlayFabClientAPI.UpdateUserTitleDisplayName(request, OnDisplayNameUpdate, OnDisplayNameUpdateError);
-            nameWindow.SetActive(false);
-        }
-
-
+        PlayFabClientAPI.UpdateUserTitleDisplayName(request, OnDisplayNameUpdateSuccess, OnDisplayNameUpdateError);
+        nameWindow.SetActive(false);
     }
-    
-    void OnDisplayNameUpdate(UpdateUserTitleDisplayNameResult result)
+
+    private void OnDisplayNameUpdateSuccess(UpdateUserTitleDisplayNameResult result)
     {
+        currentNameText.text = result.DisplayName;
         Debug.Log("Updated display name!");
-       
     }
-    void OnError(PlayFabError error)
-    {
-        noInternetpanel.SetActive(true);
-        OnlineStatusText.text = "Offline";
-        Debug.Log("Error while logging in / creating account!");
-        Debug.Log(error.GenerateErrorReport());
-    }
-    void OnDisplayNameUpdateError(PlayFabError error)
-    {
-        // show error msga
 
-        noInternetpanel.SetActive(true);
-        Debug.Log("Error while logging in / creating account!");
-        Debug.Log(error.GenerateErrorReport());
+    private void OnDisplayNameUpdateError(PlayFabError error)
+    {
+        noInternetPanel.SetActive(true);
+        Debug.LogWarning("Error while updating display name: " + error.GenerateErrorReport());
     }
+
+    #endregion
+
+    #region Leaderboard
+
     public void ActivateLeaderboard(bool state)
     {
         leaderboardWindow.SetActive(state);
-        //if (ison)
-        //{
-        //    leaderboardWindow.SetActive(true);
-
-
-
-        //    ison = false;
-        //}
-        //else
-        //if (ison == false)
-        //{
-        //    leaderboardWindow.SetActive(false);
-        //  //  GetLeaderboardAroundPlayer();
-        //    ison = true;
-        //}
     }
-  
-    void OnLeaderboardUpdate(UpdatePlayerStatisticsResult result)
-    {
-        Debug.Log("Successful Leaderboard sent");
-    }
-    void OnLeaderboardUpdateError(UpdatePlayerStatisticsResult result)
-    {
-        Debug.Log(result);
-    }
-    public void GetLeaderboard()
-    {
-        // to prevent Throttling
-        if (Time.time - LoggedInManager.Instance.LastCallsTime < LoggedInManager.Instance.LeaderboardApiCallInterval)
-        {
-            return;
-        }
-        LoggedInManager.Instance.LastCallsTime = Time.time;
 
+    public void GetLeaderboardTop()
+    {
+        if (!CanCallLeaderboardApi()) return;
 
         var request = new GetLeaderboardRequest
         {
@@ -266,171 +242,81 @@ public class IntroPlayfabMana : MonoBehaviour
             StartPosition = 0,
             MaxResultsCount = 5
         };
-        PlayFabClientAPI.GetLeaderboard(request, OnLeaderboardGet, OnLeaderBoardGetError);
+
+        PlayFabClientAPI.GetLeaderboard(request, OnLeaderboardGet, OnLeaderboardGetError);
     }
-    void GetLeaderboardOnStart()
-    {
-        var request = new GetLeaderboardAroundPlayerRequest
-        {
-            StatisticName = "PlatformScore",
-            MaxResultsCount = 5
-        };
-        PlayFabClientAPI.GetLeaderboardAroundPlayer(request, OnLeaderboardAroundPlayerGet, OnLeaderBoardGetError);
-    }
+
     public void GetLeaderboardAroundPlayer()
     {
-        // to prevent Throttling
-        if (Time.time - LoggedInManager.Instance.LastCallsTime < LoggedInManager.Instance.LeaderboardApiCallInterval)
-        {
-            return;
-        }
-        LoggedInManager.Instance.LastCallsTime = Time.time;
+        if (!CanCallLeaderboardApi()) return;
+
         var request = new GetLeaderboardAroundPlayerRequest
         {
             StatisticName = "PlatformScore",
             MaxResultsCount = 5
         };
-        PlayFabClientAPI.GetLeaderboardAroundPlayer(request, OnLeaderboardAroundPlayerGet, OnLeaderBoardGetError);
-    }
-    // for getting the top players
-    void OnLeaderboardGet(GetLeaderboardResult result)
-    {
-        foreach (Transform item in rowsParent)
-        {
-            Destroy(item.gameObject);
-        }
-        foreach (var item in result.Leaderboard)
-        {
-            GameObject newGo = Instantiate(rowPrefab, rowsParent);
-            Text[] texts = newGo.GetComponentsInChildren<Text>();
-            texts[0].text = (item.Position + 1).ToString();
-            texts[1].text = item.DisplayName;
-            texts[2].text = item.StatValue.ToString();
 
-            if (item.PlayFabId == loggedInplayfabID)
+        PlayFabClientAPI.GetLeaderboardAroundPlayer(request, OnLeaderboardAroundPlayerGet, OnLeaderboardGetError);
+    }
+
+    private bool CanCallLeaderboardApi()
+    {
+        if (Time.time - LoggedInManager.Instance.LastCallsTime < LoggedInManager.Instance.LeaderboardApiCallInterval)
+            return false;
+
+        LoggedInManager.Instance.LastCallsTime = Time.time;
+        return true;
+    }
+
+    private void OnLeaderboardGet(GetLeaderboardResult result)
+    {
+        PopulateLeaderboardRows(result.Leaderboard);
+    }
+
+    private void OnLeaderboardAroundPlayerGet(GetLeaderboardAroundPlayerResult result)
+    {
+        PopulateLeaderboardRows(result.Leaderboard);
+    }
+
+    private void PopulateLeaderboardRows(System.Collections.Generic.List<PlayerLeaderboardEntry> entries)
+    {
+        foreach (Transform child in rowsParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (var entry in entries)
+        {
+            GameObject row = Instantiate(rowPrefab, rowsParent);
+            Text[] texts = row.GetComponentsInChildren<Text>();
+
+            if (texts.Length < 3)
             {
-                texts[0].color = Color.cyan;
-                texts[1].color = Color.cyan;
-                texts[2].color = Color.cyan;
+                Debug.LogWarning("Leaderboard row prefab is missing expected Text fields.");
+                continue;
             }
 
-            Debug.Log(item.Position + " " + item.PlayFabId + " " + item.StatValue);
+            texts[0].text = (entry.Position + 1).ToString();
+            texts[1].text = entry.DisplayName;
+            texts[2].text = entry.StatValue.ToString();
+
+            bool isLocalPlayer = entry.PlayFabId == loggedInPlayFabId;
+            Color rowColor = isLocalPlayer ? Color.cyan : texts[0].color;
+            texts[0].color = rowColor;
+            texts[1].color = rowColor;
+            texts[2].color = rowColor;
         }
     }
-    // for getting scores around player
 
-    void OnLeaderboardAroundPlayerGet(GetLeaderboardAroundPlayerResult result)
+    private void OnLeaderboardGetError(PlayFabError error)
     {
-        foreach (Transform item in rowsParent)
+        Debug.LogWarning("Leaderboard API rate/error: " + error.GenerateErrorReport());
+
+        if (error.Error == PlayFabErrorCode.Unknown && error.RetryAfterSeconds > 0)
         {
-            Destroy(item.gameObject);
-        }
-        foreach (var item in result.Leaderboard)
-        {
-            GameObject newGo = Instantiate(rowPrefab, rowsParent);
-            Text[] texts = newGo.GetComponentsInChildren<Text>();
-            texts[0].text = (item.Position + 1).ToString();
-            texts[1].text = item.DisplayName;
-            texts[2].text = item.StatValue.ToString();
-
-            if (item.PlayFabId == loggedInplayfabID)
-            {
-                texts[0].color = Color.cyan;
-                texts[1].color = Color.cyan;
-                texts[2].color = Color.cyan;
-            }
-            /*  if (loggedInplayfabID==item.PlayFabId)
-              {
-                  texts[0].color = Color.red;
-                  texts[1].color = Color.cyan;
-                  texts[2].color = Color.cyan;
-              }*/
-
-            Debug.Log(item.Position + " " + item.PlayFabId + " " + item.StatValue);
+            Invoke(nameof(GetLeaderboardAroundPlayer), (float)error.RetryAfterSeconds);
         }
     }
 
-
-    void OnLeaderBoardGetError(PlayFabError err)
-    {
-        Debug.Log("Leadeboard get api rate error");
-        if (err.Error == PlayFabErrorCode.Unknown && err.RetryAfterSeconds > 0)
-        {
-            Invoke(nameof(GetLeaderboardAroundPlayer), (float)err.RetryAfterSeconds);
-            // Retry fxn
-        }
-
-    }
-
-    void OnLeaderBoardGetArroundPlayerError(PlayFabError err)
-    {
-
-    }
-    public void RefreshLogin()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        LoggedInManager.Instance.isLoggedIn = false;
-    }
-
-
-
-    // Logging in registering using Username and PassWord
-    //[Header("UI")]
-    //public Text MessageText;
-    //public InputField emailInput;
-    //public InputField passWordInput;
-
-    //public void RegisterButton()
-    //{
-    //    if (passWordInput.text.Length < 6)
-    //    {
-    //        MessageText.text = "Password too short!";
-    //        return;
-    //    }
-
-    //    var request = new RegisterPlayFabUserRequest
-    //    {
-    //        Email = emailInput.text,
-    //        Password = passWordInput.text,
-    //        RequireBothUsernameAndEmail = false
-    //    };
-    //    PlayFabClientAPI.RegisterPlayFabUser (request,OnRegisterSuccess,OnErrorRegister);
-    //}
-    //void OnRegisterSuccess(RegisterPlayFabUserResult result)
-    //{
-    //    MessageText.text = "Registered and Logged in!";
-    //}
-    //public void LoginButton()
-    //{
-    //    var request = new LoginWithEmailAddressRequest
-    //    {
-    //        Email = emailInput.text,
-    //        Password = passWordInput.text
-    //    };
-    //    PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnErrorRegister);
-    //}
-    //void OnLoginSuccess( LoginResult result)
-    //{
-    //    MessageText.text = "Logged In!";
-    //    Debug.Log("Successful login / account created!");
-    //}
-    //public void ResetPassWordButton()
-    //{
-    //    var request = new SendAccountRecoveryEmailRequest
-    //    {
-    //        Email = emailInput.text,
-    //        TitleId = "" // input this later
-
-    //    };
-    //    PlayFabClientAPI.SendAccountRecoveryEmail(request, OnPasswordReset, OnErrorRegister);
-    //}
-    //void OnPasswordReset(SendAccountRecoveryEmailResult result)
-    //{
-    //    MessageText.text = "Password reset mail sent!";
-    //}
-    //void OnErrorRegister( PlayFabError error)
-    //{
-    //    MessageText.text = error.ErrorMessage;
-    //    Debug.Log(error.GenerateErrorReport());
-    //}
+    #endregion
 }
