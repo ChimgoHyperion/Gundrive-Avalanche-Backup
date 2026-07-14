@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8242285262292266030}
   - component: {fileID: 8984586182693101823}
   - component: {fileID: 107752933070817932}
+  - component: {fileID: -3449536504477799643}
   m_Layer: 11
   m_Name: Bullet  box multi
   m_TagString: Bullets
@@ -355,8 +356,26 @@ MonoBehaviour:
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: -3449536504477799643}
   ForceRemoteRenderTimeframe: 0
+--- !u!114 &-3449536504477799643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6344079146581691657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 1
 --- !u!1001 &1635295452943107947
 PrefabInstance:
   m_ObjectHideFlags: 0
