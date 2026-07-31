@@ -61,7 +61,7 @@ MonoBehaviour:
   - {fileID: 4422784358714260439, guid: 6abf27f0701804943acf702fd5e0d60e, type: 3}
   timeLeft: 5
   triggeredCountdown: 0
-  submitScoresManager: {fileID: 0}
+  submitScoresManager: {fileID: 2780266391841768092}
 --- !u!114 &5984560813385462462
 MonoBehaviour:
   m_ObjectHideFlags: 0
